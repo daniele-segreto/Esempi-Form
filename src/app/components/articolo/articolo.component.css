@@ -1,0 +1,12 @@
+.ng-valid{
+  background-color: rgb(160, 179, 250);
+}
+
+
+.ng-invalid{
+  background-color: rgb(216, 216, 216);
+}
+
+form, input, textarea {
+  border: 1px solid rgb(0, 0, 0) !important;
+}

@@ -1,0 +1,62 @@
+<!-- Form per la gestione dei dati dell'articolo -->
+<form [formGroup]="myForm" class="container mt-5 p-4">
+  <!-- Campo per il titolo dell'articolo -->
+  <div class="mb-3">
+    <label for="txtTitolo" class="form-label">Titolo</label>
+    <input type="text" class="form-control" formControlName="txtTitolo">
+    <!-- Messaggio di errore se il titolo è obbligatorio e supera i 30 caratteri -->
+    <div *ngIf="myForm.controls['txtTitolo'].hasError('required') && !myForm.controls['txtTitolo'].pristine" class="text-danger">Il titolo è obbligatorio e non può superare i 30 caratteri!</div>
+  </div>
+
+  <!-- Campo per l'immagine dell'articolo -->
+  <div class="mb-3">
+    <label for="txtImmagine" class="form-label">Immagine</label>
+    <input type="file" class="form-control" (change)="onFileSelected($event)" formControlName="txtImmagine">
+    <!-- Messaggio di errore se l'immagine è obbligatoria -->
+    <div *ngIf="myForm.controls['txtImmagine'].hasError('required') && !myForm.controls['txtImmagine'].pristine" class="text-danger">L'immagine è obbligatoria!</div>
+  </div>
+
+  <!-- Campo per l'autore dell'articolo -->
+  <div class="mb-3">
+    <label for="txtAutore" class="form-label">Autore</label>
+    <input type="text" class="form-control" formControlName="txtAutore">
+    <!-- Messaggio di errore se l'autore è obbligatorio e supera i 20 caratteri -->
+    <div *ngIf="myForm.controls['txtAutore'].hasError('required') && !myForm.controls['txtAutore'].pristine" class="text-danger">L'autore è obbligatorio e non può superare i 20 caratteri!</div>
+  </div>
+
+  <!-- Campo per il testo dell'articolo -->
+  <div class="mb-3">
+    <label for="txtTesto" class="form-label">Testo</label>
+    <textarea class="form-control" formControlName="txtTesto"></textarea>
+    <!-- Messaggio di errore se il testo è obbligatorio e non rientra nel range di caratteri specificato -->
+    <div *ngIf="myForm.controls['txtTesto'].hasError('required') && !myForm.controls['txtTesto'].pristine" class="text-danger">Il testo è obbligatorio e deve essere compreso tra i 2000 e i 5000 caratteri!</div>
+  </div>
+
+  <!-- Pulsante per inviare o modificare l'articolo -->
+  <button type="button" (click)="inviaArticolo()" class="btn btn-dark">Invia/Modifica</button>
+</form>
+
+<!-- Lista degli articoli -->
+<div class="container mt-5">
+  <div class="row justify-content-center text-center">
+    <!-- Iterazione sugli articoli per visualizzarli -->
+    <div *ngFor="let articolo of articoli" class="col-lg-4 mb-4">
+      <div class="card">
+        <!-- Immagine dell'articolo -->
+        <img [src]="articolo.immagine" alt="Immagine articolo" class="card-img-top" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <!-- Titolo dell'articolo -->
+          <h5 class="card-title">{{ articolo.titolo }}</h5>
+          <!-- Autore dell'articolo -->
+          <p class="card-text">Autore: {{ articolo.autore }}</p>
+          <!-- Testo dell'articolo -->
+          <p class="card-text">{{ articolo.testo }}</p>
+          <!-- Pulsante per eliminare l'articolo -->
+          <button type="button" (click)="eliminaArticolo(articolo.id)" class="btn btn-danger">Elimina</button>
+          <!-- Pulsante per modificare l'articolo -->
+          <button type="button" (click)="modificaArticolo(articolo.id)" class="btn btn-primary">Modifica</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

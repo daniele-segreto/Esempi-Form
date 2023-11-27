@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "esempi-form": {
+      "hosting": {
+        "esempi-form": [
+          "esempi-form"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "esempi-form"
+  }
+}

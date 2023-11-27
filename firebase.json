@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "esempi-form",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}
