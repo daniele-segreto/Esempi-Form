@@ -1,0 +1,82 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- FORM -->
+    <div class="col-lg-3">
+      <form [formGroup]="myForm" class="p-3">
+        <!-- NOME -->
+        <div>
+          <label class="mb-3 form-label" for="txtNome">Nome</label>
+          <input class="form-control" type="text" formControlName="txtNome">
+          <div class="error-message" [hidden]="myForm.controls['txtNome'].valid || myForm.controls['txtNome'].pristine">Il nome è obbligatorio e non può superare i 20 caratteri!</div>
+        </div>
+        <!-- COGNOME -->
+        <div>
+          <label class="mb-3 form-label" for="txtCognome">Cognome</label>
+          <input class="form-control" type="text" formControlName="txtCognome">
+          <div class="error-message" [hidden]="myForm.controls['txtCognome'].valid || myForm.controls['txtCognome'].pristine">Il cognome è obbligatorio e non può superare i 20 caratteri!</div>
+        </div>
+        <!-- EMAIL -->
+        <div>
+          <label class="mb-3 form-label" for="txtEmail">Email</label>
+          <input class="form-control" type="text" formControlName="txtEmail">
+          <div class="error-message" [hidden]="myForm.controls['txtEmail'].valid || myForm.controls['txtEmail'].pristine">L'indirizzo email non è valido!</div>
+        </div>
+        <!-- NUMERO -->
+        <div>
+          <label class="mb-3 form-label" for="txtNumero">Numero</label>
+          <input class="form-control" type="text" formControlName="txtNumero">
+          <div class="error-message" [hidden]="myForm.controls['txtNumero'].valid || myForm.controls['txtNumero'].pristine">Il numero deve essere un valore numerico!</div>
+        </div>
+        <!-- DATA DI NASCITA -->
+        <div>
+          <label class="mb-3 form-label" for="txtData_Nascita">Data di Nascita</label>
+          <input class="form-control" type="text" formControlName="txtData_Nascita">
+          <div class="error-message" [hidden]="myForm.controls['txtData_Nascita'].valid || myForm.controls['txtData_Nascita'].pristine">La data di nascita è obbligatoria e deve essere nel formato gg/mm/aaaa!</div>
+        </div>
+        <!-- PASSWORD -->
+        <div>
+          <label class="mb-3 form-label" for="txtPassword">Password</label>
+          <input class="form-control" type="password" formControlName="txtPassword">
+          <div class="error-message" [hidden]="myForm.controls['txtPassword'].valid || myForm.controls['txtPassword'].pristine">La password è obbligatoria!</div>
+        </div>
+        <!-- CONFERMA PASSWORD -->
+        <div>
+          <label class="mb-3 form-label" for="txtConfermaPassword">Conferma Password</label>
+          <input class="form-control" type="password" formControlName="txtConfermaPassword">
+          <div class="error-message" [hidden]="myForm.controls['txtConfermaPassword'].valid || myForm.controls['txtConfermaPassword'].pristine">Conferma la password è obbligatoria e deve corrispondere alla password!</div>
+        </div>
+        <button class="btn btn-primary mt-2" type="button" (click)="inviaContatto()">Invia</button>
+      </form>
+    </div>
+
+    <!-- TABELLA (al momento statica/non funzioante) -->
+    <div class="col-lg-9">
+      <table class="table">
+        <!-- INTESTAZIONE: CAMPI -->
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Cognome</th>
+            <th scope="col">Email</th>
+            <th scope="col">Numero</th>
+            <th scope="col">Data di Nascita</th>
+            <th scope="col">Password</th>
+          </tr>
+        </thead>
+        <!-- ELEMENTI DA CICLARE: DATI/CONTATTI -->
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>iiu@mdo.it</td>
+            <td>123455</td>
+            <td>12//12/2093</td>
+            <td>2u1h21jkewb2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

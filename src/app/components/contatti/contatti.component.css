@@ -1,0 +1,21 @@
+.ng-valid{
+  background-color: rgb(160, 179, 250);
+}
+
+
+.ng-invalid{
+  background-color: rgb(216, 216, 216);
+}
+
+form, input, textarea {
+  border: 1px solid rgb(0, 0, 0) !important;
+}
+
+/* span {
+  color: red;
+  margin-bottom: 700px !important;
+} */
+.error-message {
+  color: red;
+  margin-bottom: 10px; /* Imposta uno spazio superiore più ragionevole */
+}
