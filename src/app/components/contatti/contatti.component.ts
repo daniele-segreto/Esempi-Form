@@ -1,90 +1,124 @@
-// Importa i moduli necessari da Angular
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+// Importa il modulo Component e OnInit da Angular
+import { Component, OnInit } from '@angular/core';
 
-// Funzione di validazione per valori numerici
-function numericValidator(control: AbstractControl): { [key: string]: boolean } | null {
-  const numericValue = Number(control.value);
-  if (!isNaN(numericValue) && Number.isInteger(numericValue)) {
-    return null; // Valore numerico valido
-  } else {
-    return { 'numeric': true }; // Valore numerico non valido
-  }
-}
+// Importa FormGroup da @angular/forms
+import { FormGroup } from '@angular/forms';
 
-// Funzione di validazione per la corrispondenza delle password
-function passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
-  const password = control.get('txtPassword')?.value;
-  const confirmPassword = control.get('txtConfermaPassword')?.value;
+// Importa il servizio ContattiService dal percorso specificato
+import { ContattiService } from 'src/app/services/contatti.service';
 
-  if (password === confirmPassword) {
-    return null; // Le password corrispondono
-  } else {
-    return { 'passwordMismatch': true }; // Le password non corrispondono
-  }
-}
-
-// Funzione di validazione per il formato della data
-function dateFormatValidator(control: AbstractControl): { [key: string]: boolean } | null {
-  const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-  const inputValue = control.value;
-
-  if (inputValue && !dateRegex.test(inputValue)) {
-    return { 'invalidDateFormat': true }; // Formato data non valido
-  }
-
-  return null;
-}
-
-// Componente Angular per la gestione del form
 @Component({
   selector: 'app-contatti',
   templateUrl: './contatti.component.html',
-  styleUrls: ['./contatti.component.css']
+  styleUrls: ['./contatti.component.css'],
+  providers: [ContattiService]
 })
-export class ContattiComponent {
-  myForm: FormGroup;
+export class ContattiComponent implements OnInit {
 
-  // Costruttore del componente, inizializza il form con i controlli e i validatori
-  constructor(fb: FormBuilder) {
-    this.myForm = fb.group({
-      txtNome: ["", [Validators.required, Validators.maxLength(20)]],
-      txtCognome: ["", [Validators.required, Validators.maxLength(20)]],
-      txtEmail: ["", [Validators.required, Validators.email, Validators.maxLength(20)]],
-      txtNumero: ["", [Validators.required, numericValidator, Validators.maxLength(20)]],
-      txtData_Nascita: ["", [Validators.required, dateFormatValidator, Validators.maxLength(20)]],
-      txtPassword: ["", [Validators.required, Validators.maxLength(20)]],
-      txtConfermaPassword: ["", [Validators.required, Validators.maxLength(20)]],
-    }, {
-      validators: passwordMatchValidator // Aggiunge il validatore di corrispondenza delle password al gruppo di form
-    });
+
+  // ******************** VARIABILI ********************
+
+  // Dichiarazione di variabili del componente
+  myForm: FormGroup; // Form Group per gestire il form dei contatti
+  selectedFile: File | undefined; // File selezionato dall'utente
+  contatti: any[] = []; // Array per memorizzare i contatti recuperati da Firestore
+  contattoDaModificareId: string | null = null; // ID dell'contatto che deve essere modificato
+
+
+  // ******************** COSTRUTTORE ********************
+
+  // Costruttore del componente, inietta il servizio contattoService
+  constructor(private contattiService: ContattiService) {
+    // Inizializza il form dei contatti utilizzando il metodo del servizio
+    this.myForm = this.contattiService.initForm();
   }
 
-  // Funzione chiamata al clic del pulsante di invio
-  inviaContatto() {
-    if (this.myForm.valid) {
-      // Il form è valido, procedi con l'invio dei dati
 
-      // Visualizza l'oggetto myForm nei log
-      console.log(this.myForm.value);
+  // ******************** INIZIALIZZAZIONE COMPONENTE ********************
 
-      // Accedi ai singoli controlli nei log
-      console.log(this.myForm.controls["txtNome"].value);
-      console.log(this.myForm.controls["txtCognome"].value);
-      console.log(this.myForm.controls["txtEmail"].value);
-      console.log(this.myForm.controls["txtNumero"].value);
-      console.log(this.myForm.controls["txtData_Nascita"].value);
-      console.log(this.myForm.controls["txtPassword"].value);
-      console.log(this.myForm.controls["txtConfermaPassword"].value);
+  // Metodo chiamato durante l'inizializzazione del componente
+  ngOnInit() {
+    // Carica i contatti quando il componente è inizializzato
+    this.caricaContatti();
+  }
 
-      // Aggiungi qui la logica per l'invio effettivo dei dati
-      // codice...
 
-      // Dopo l'invio dei dati, reimposta il form
-      this.myForm.reset();
-    } else {
-      // Il form non è valido, mostra eventuali messaggi di errore o avvisi
-      alert("Il form non è valido. Controlla gli errori.");
+  // ******************** OTTENERE ********************
+
+  // Metodo per caricare i contatti dal servizio
+  async caricaContatti() {
+    try {
+      // Utilizza il servizio per recuperare gli contatti da Firestore
+      this.contatti = await this.contattiService.caricaContatti();
+    } catch (error) {
+      // Gestisci l'errore, ad esempio mostrando un messaggio all'utente
+      console.error('Errore durante il recupero degli contatti:', error);
     }
   }
+
+
+  // ******************** SELEZIONE FILE ********************
+
+  // Metodo chiamato quando l'utente seleziona un file
+  onFileSelected(event: any) {
+    // Utilizza il servizio per gestire il file selezionato dall'utente
+    this.selectedFile = this.contattiService.gestisciFileSelezionato(event);
+  }
+
+
+  // ******************** AGGIUNGERE ********************
+
+
+  // Metodo per inviare o modificare un contatti
+  async inviaContatto() {
+    try {
+      // Utilizza il servizio per inviare o modificare l'contatti
+      await this.contattiService.inviaContatto(this.myForm, this.selectedFile, this.contattoDaModificareId);
+      // Dopo l'invio o la modifica, ricarica gli contatti e resetta il form
+      this.caricaContatti();
+      // Resetta il form
+      this.myForm.reset();
+    } catch (error) {
+      // Gestisci l'errore, ad esempio mostrando un messaggio all'utente
+      console.error('Errore durante l\'invio/modifica degli contatti:', error);
+    }
+  }
+
+
+  // ******************** ELIMINARE ********************
+
+  // Metodo per eliminare un contatto
+  async eliminaContatto(contattoId: string) {
+    try {
+      // Utilizza il servizio per eliminare l'contatto
+      await this.contattiService.eliminaContatto(contattoId);
+      // Dopo l'eliminazione, ricarica gli contatti
+      this.caricaContatti();
+    } catch (error) {
+      // Gestisci l'errore, ad esempio mostrando un messaggio all'utente
+      console.error('Errore durante l\'eliminazione dell\'contatto:', error);
+    }
+  }
+
+
+  // ******************** MODIFICARE ********************
+
+  // Metodo per preparare il form con i dati dell'contatto da modificare
+  modificaContatto(contattoId: string) {
+    // Trova l'contatto da modificare nell'array degli contatti
+    const contattoSelezionato = this.contatti.find(contatto => contatto.id === contattoId);
+    // Popola il form con i dati dell'contatto selezionato
+    this.myForm.patchValue({
+      txtNome: contattoSelezionato.nome,
+      txtCognome: contattoSelezionato.cognome,
+      txtEmail: contattoSelezionato.email,
+      txtNumero: contattoSelezionato.numero,
+      txtData_Nascita: contattoSelezionato.data_nascita,
+      txtPassword: contattoSelezionato.password,
+      txtConfermaPassword: contattoSelezionato.conferma_password,
+    });
+    // Memorizza l'ID dell'contatto da modificare
+    this.contattoDaModificareId = contattoId;
+  }
+
 }

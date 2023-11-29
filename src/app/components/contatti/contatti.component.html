@@ -15,6 +15,12 @@
           <input class="form-control" type="text" formControlName="txtCognome">
           <div class="error-message" [hidden]="myForm.controls['txtCognome'].valid || myForm.controls['txtCognome'].pristine">Il cognome è obbligatorio e non può superare i 20 caratteri!</div>
         </div>
+        <!-- IMMAGINE -->
+        <div>
+          <label class="mb-3 form-label" for="txtImmagine">Immagine</label>
+          <input class="form-control" type="file" (change)="onFileSelected($event)" formControlName="txtImmagine">
+          <div class="error-message" [hidden]="myForm.controls['txtImmagine'].valid || myForm.controls['txtImmagine'].pristine">L'immagine è obbligatoria</div>
+        </div>
         <!-- EMAIL -->
         <div>
           <label class="mb-3 form-label" for="txtEmail">Email</label>
@@ -55,25 +61,37 @@
         <!-- INTESTAZIONE: CAMPI -->
         <thead>
           <tr>
-            <th scope="col">ID</th>
+            <th scope="col">Coidce Univoco</th>
+            <th scope="col">Foto</th>
             <th scope="col">Nome</th>
             <th scope="col">Cognome</th>
             <th scope="col">Email</th>
             <th scope="col">Numero</th>
             <th scope="col">Data di Nascita</th>
             <th scope="col">Password</th>
+            <th>Azioni</th>
           </tr>
         </thead>
         <!-- ELEMENTI DA CICLARE: DATI/CONTATTI -->
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>iiu@mdo.it</td>
-            <td>123455</td>
-            <td>12//12/2093</td>
-            <td>2u1h21jkewb2</td>
+          <tr *ngFor="let contatto of contatti">
+            <th scope="row">{{ contatto.id }}</th>
+            <td>
+              <!-- Utilizza l'attributo style per impostare larghezza e altezza dell'immagine -->
+              <img [src]="contatto.immagine" alt="img_contatto" widtd=50 height=50;>
+            </td>
+            <td>{{ contatto.nome }}</td>
+            <td>{{ contatto.cognome }}</td>
+            <td>{{ contatto.email }}</td>
+            <td>{{ contatto.numero }}</td>
+            <td>{{ contatto.data_nascita }}</td>
+            <td>{{ contatto.password }}</td>
+            <td>
+              <!-- Pulsante per eliminare l'articolo -->
+              <button type="button" (click)="eliminaContatto(contatto.id)" class="btn btn-sm btn-danger me-1">Elimina</button>
+              <!-- Pulsante per modificare l'contatto -->
+              <button type="button" (click)="modificaContatto(contatto.id)" class="btn btn-sm btn-primary">Modifica</button>
+            </td>
           </tr>
         </tbody>
       </table>
